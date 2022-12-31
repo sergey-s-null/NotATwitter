@@ -1,21 +1,20 @@
-﻿using MongoDB.Driver;
-using Server.Models;
+﻿using Server.Models;
+using Server.Services.Abstract;
 
 namespace Server.Repositories;
 
 public class MessageMongoRepository
 {
-	public void Create(MessageModel message)
+	private readonly IMongoDbCollectionsProvider _mongoDbCollectionsProvider;
+
+	public MessageMongoRepository(IMongoDbCollectionsProvider mongoDbCollectionsProvider)
 	{
-		var messageCollection = GetMessageCollection();
-		messageCollection.InsertOne(message);
+		_mongoDbCollectionsProvider = mongoDbCollectionsProvider;
 	}
 
-	private static IMongoCollection<MessageModel> GetMessageCollection()
+	public void Create(MessageModel message)
 	{
-		var client = new MongoClient("mongodb://localhost:27017");
-		var mainDatabase = client.GetDatabase("Main");
-
-		return mainDatabase.GetCollection<MessageModel>("Message");
+		var messageCollection = _mongoDbCollectionsProvider.GetMessageCollection();
+		messageCollection.InsertOne(message);
 	}
 }
