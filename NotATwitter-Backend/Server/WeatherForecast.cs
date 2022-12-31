@@ -1,5 +1,6 @@
 namespace Server;
 
+// todo delete later
 public class WeatherForecast
 {
 	public DateTime Date { get; set; }

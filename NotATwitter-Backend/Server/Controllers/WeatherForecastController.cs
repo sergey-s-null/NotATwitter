@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers;
 
+// todo delete later
 [ApiController]
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
