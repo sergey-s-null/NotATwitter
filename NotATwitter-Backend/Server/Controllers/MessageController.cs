@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using Server.Models;
+using Server.Repositories;
+using Server.Requests;
 
 namespace Server.Controllers;
 
@@ -6,9 +10,20 @@ namespace Server.Controllers;
 [Route("[controller]/[action]")]
 public class MessageController : ControllerBase
 {
-	[HttpGet]
-	public void Create()
+	private readonly MessageMongoRepository _messageMongoRepository;
+
+	public MessageController(MessageMongoRepository messageMongoRepository)
 	{
-		// creation
+		_messageMongoRepository = messageMongoRepository;
+	}
+
+	[HttpPost]
+	public void Create(CreateMessageRequest request)
+	{
+		_messageMongoRepository.Create(new MessageModel
+		{
+			Id = ObjectId.GenerateNewId(),
+			Text = request.Text
+		});
 	}
 }
