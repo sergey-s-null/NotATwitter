@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Server.Extensions;
 using Server.Models.Mongo;
 using Server.Repositories;
 using Server.Requests;
@@ -20,13 +21,21 @@ public class MessageController : ControllerBase
 
 	[HttpPost]
 	[Authorize]
-	public void Create(CreateMessageRequest request)
+	public ActionResult Create(CreateMessageRequest request)
 	{
+		var userId = User.GetMongoDbIdOrDefault();
+		if (userId is null)
+		{
+			return Unauthorized();
+		}
+
 		_messageMongoRepository.Create(new MessageMongoModel(
 			ObjectId.Empty,
-			ObjectId.Empty, // todo user valid id,
+			userId.Value,
 			DateTime.Now,
 			request.Text
 		));
+
+		return Ok();
 	}
 }

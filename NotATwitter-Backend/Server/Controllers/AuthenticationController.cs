@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Server.Entities;
 using Server.Models.Mongo;
 using Server.Repositories;
 using Server.Requests;
@@ -71,7 +72,11 @@ public class AuthenticationController : ControllerBase
 
 	private async Task AuthorizeAsync(UserMongoModel user)
 	{
-		var claims = new[] { new Claim(ClaimTypes.Name, user.Name) };
+		var claims = new[]
+		{
+			new Claim(CustomClaimTypes.MongoDbIdentifier, user.Id.ToString()),
+			new Claim(ClaimTypes.Name, user.Name)
+		};
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
 		await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
