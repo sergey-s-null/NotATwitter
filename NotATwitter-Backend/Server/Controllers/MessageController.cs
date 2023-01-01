@@ -21,7 +21,7 @@ public class MessageController : ControllerBase
 
 	[HttpPost]
 	[Authorize]
-	public ActionResult Create(CreateMessageRequest request)
+	public async Task<ActionResult> Create(CreateMessageRequest request)
 	{
 		var userId = User.GetMongoDbIdOrDefault();
 		if (userId is null)
@@ -29,7 +29,7 @@ public class MessageController : ControllerBase
 			return Unauthorized();
 		}
 
-		_messageMongoRepository.Create(new MessageMongoModel(
+		await _messageMongoRepository.CreateAsync(new MessageMongoModel(
 			ObjectId.Empty,
 			userId.Value,
 			DateTime.Now,

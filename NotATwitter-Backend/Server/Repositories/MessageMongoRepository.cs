@@ -12,9 +12,12 @@ public class MessageMongoRepository
 		_mongoDbCollectionsProvider = mongoDbCollectionsProvider;
 	}
 
-	public void Create(MessageMongoModel message)
+	public async Task<MessageMongoModel> CreateAsync(MessageMongoModel message)
 	{
 		var messageCollection = _mongoDbCollectionsProvider.GetMessageCollection();
-		messageCollection.InsertOne(message);
+
+		await messageCollection.InsertOneAsync(message);
+
+		return message;
 	}
 }

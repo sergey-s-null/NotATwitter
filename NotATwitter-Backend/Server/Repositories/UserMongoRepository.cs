@@ -37,12 +37,13 @@ public class UserMongoRepository
 		return count >= 1;
 	}
 
-	public Task CreateAsync(UserMongoModel user)
+	public async Task<UserMongoModel> CreateAsync(UserMongoModel user)
 	{
-		// todo return model with created ObjectId
 		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
 
-		return userCollection.InsertOneAsync(user);
+		await userCollection.InsertOneAsync(user);
+
+		return user;
 	}
 
 	private static Expression<Func<UserMongoModel, bool>> GetNameEqualityFilter(string name)
