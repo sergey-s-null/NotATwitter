@@ -27,5 +27,9 @@ public class ServerModule : Module
 			.RegisterType<HardcodedApplicationConfiguration>()
 			.As<IApplicationConfiguration>()
 			.SingleInstance();
+		builder
+			.RegisterType<UserPasswordHashingService>()
+			.As<IUserPasswordHashingService>()
+			.SingleInstance();
 	}
 }
