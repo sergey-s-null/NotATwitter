@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Server.Models;
+using MongoDB.Bson;
+using Server.Models.Mongo;
 using Server.Repositories;
 using Server.Requests;
 using Server.Services.Abstract;
@@ -56,7 +57,11 @@ public class AuthenticationController : ControllerBase
 		}
 
 		var passwordHash = _userPasswordHashingService.GetPasswordHash(request.Password);
-		var user = new UserModel(request.Name, passwordHash);
+		var user = new UserMongoModel(
+			ObjectId.Empty,
+			request.Name,
+			passwordHash
+		);
 		await _userMongoRepository.CreateAsync(user);
 
 		await AuthorizeAsync(user);
@@ -64,7 +69,7 @@ public class AuthenticationController : ControllerBase
 		return Ok();
 	}
 
-	private async Task AuthorizeAsync(UserModel user)
+	private async Task AuthorizeAsync(UserMongoModel user)
 	{
 		var claims = new[] { new Claim(ClaimTypes.Name, user.Name) };
 		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -1,4 +1,4 @@
-﻿using Server.Models;
+﻿using Server.Models.Mongo;
 using Server.Services.Abstract;
 
 namespace Server.Repositories;
@@ -12,7 +12,7 @@ public class MessageMongoRepository
 		_mongoDbCollectionsProvider = mongoDbCollectionsProvider;
 	}
 
-	public void Create(MessageModel message)
+	public void Create(MessageMongoModel message)
 	{
 		var messageCollection = _mongoDbCollectionsProvider.GetMessageCollection();
 		messageCollection.InsertOne(message);

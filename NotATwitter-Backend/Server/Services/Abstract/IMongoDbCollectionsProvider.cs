@@ -1,11 +1,11 @@
 ﻿using MongoDB.Driver;
-using Server.Models;
+using Server.Models.Mongo;
 
 namespace Server.Services.Abstract;
 
 public interface IMongoDbCollectionsProvider
 {
-	IMongoCollection<UserModel> GetUserCollection();
+	IMongoCollection<UserMongoModel> GetUserCollection();
 
-	IMongoCollection<MessageModel> GetMessageCollection();
+	IMongoCollection<MessageMongoModel> GetMessageCollection();
 }

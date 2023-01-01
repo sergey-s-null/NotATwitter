@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using MongoDB.Driver;
-using Server.Models;
+using Server.Models.Mongo;
 using Server.Services.Abstract;
 
 namespace Server.Repositories;
@@ -14,7 +14,7 @@ public class UserMongoRepository
 		_mongoDbCollectionsProvider = mongoDbCollectionsProvider;
 	}
 
-	public async Task<UserModel?> FindByNameAsync(string name)
+	public async Task<UserMongoModel?> FindByNameAsync(string name)
 	{
 		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
 
@@ -37,14 +37,15 @@ public class UserMongoRepository
 		return count >= 1;
 	}
 
-	public Task CreateAsync(UserModel user)
+	public Task CreateAsync(UserMongoModel user)
 	{
+		// todo return model with created ObjectId
 		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
 
 		return userCollection.InsertOneAsync(user);
 	}
 
-	private static Expression<Func<UserModel, bool>> GetNameEqualityFilter(string name)
+	private static Expression<Func<UserMongoModel, bool>> GetNameEqualityFilter(string name)
 	{
 		var nameLower = name.ToLower();
 		return x => x.Name.ToLower() == nameLower;
