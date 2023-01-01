@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Server.Entities;
+using Server.Exceptions;
 using Server.Models.Mongo;
 using Server.Repositories;
 using Server.Requests;
@@ -15,13 +16,16 @@ namespace Server.Controllers;
 [Route("[controller]/[action]")]
 public class AuthenticationController : ControllerBase
 {
+	private readonly ILockService _lockService;
 	private readonly UserMongoRepository _userMongoRepository;
 	private readonly IUserPasswordHashingService _userPasswordHashingService;
 
 	public AuthenticationController(
+		ILockService lockService,
 		UserMongoRepository userMongoRepository,
 		IUserPasswordHashingService userPasswordHashingService)
 	{
+		_lockService = lockService;
 		_userMongoRepository = userMongoRepository;
 		_userPasswordHashingService = userPasswordHashingService;
 	}
@@ -29,7 +33,6 @@ public class AuthenticationController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult> Login(LoginRequest request)
 	{
-		// todo sync account changes with hazelcast
 		var user = await _userMongoRepository.FindByNameAsync(request.Username);
 
 		if (user is null)
@@ -59,19 +62,29 @@ public class AuthenticationController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult> RegisterAsync(RegisterRequest request)
 	{
-		// todo sync with hazelcast
-		if (await _userMongoRepository.ExistsAsync(request.Name))
+		UserMongoModel user;
+		try
+		{
+			using var _ = _lockService.LockUser(request.Name, false);
+
+			if (await _userMongoRepository.ExistsAsync(request.Name))
+			{
+				return Conflict("User with the same name already exists.");
+			}
+
+			var passwordHash = _userPasswordHashingService.GetPasswordHash(request.Password);
+			user = new UserMongoModel(
+				ObjectId.Empty,
+				request.Name,
+				passwordHash
+			);
+
+			await _userMongoRepository.CreateAsync(user);
+		}
+		catch (UnableLockException e)
 		{
 			return Conflict("User with the same name already exists.");
 		}
-
-		var passwordHash = _userPasswordHashingService.GetPasswordHash(request.Password);
-		var user = new UserMongoModel(
-			ObjectId.Empty,
-			request.Name,
-			passwordHash
-		);
-		await _userMongoRepository.CreateAsync(user);
 
 		await AuthorizeAsync(user);
 
