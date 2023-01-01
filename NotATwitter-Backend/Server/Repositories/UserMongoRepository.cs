@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using System.Linq.Expressions;
+using MongoDB.Driver;
 using Server.Models;
 using Server.Services.Abstract;
 
@@ -18,7 +19,7 @@ public class UserMongoRepository
 		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
 
 		var user = await userCollection
-			.Find(x => IsEqualNames(x.Name, name))
+			.Find(GetNameEqualityFilter(name))
 			.FirstOrDefaultAsync();
 
 		return user;
@@ -28,7 +29,8 @@ public class UserMongoRepository
 	{
 		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
 
-		var count = await userCollection.CountDocumentsAsync(x => IsEqualNames(x.Name, name));
+		var count = await userCollection
+			.CountDocumentsAsync(GetNameEqualityFilter(name));
 
 		// todo check and log if count > 1
 
@@ -42,8 +44,9 @@ public class UserMongoRepository
 		return userCollection.InsertOneAsync(user);
 	}
 
-	private static bool IsEqualNames(string first, string second)
+	private static Expression<Func<UserModel, bool>> GetNameEqualityFilter(string name)
 	{
-		return string.Equals(first, second, StringComparison.InvariantCultureIgnoreCase);
+		var nameLower = name.ToLower();
+		return x => x.Name.ToLower() == nameLower;
 	}
 }
