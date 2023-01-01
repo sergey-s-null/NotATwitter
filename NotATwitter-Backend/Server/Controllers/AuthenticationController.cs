@@ -49,6 +49,14 @@ public class AuthenticationController : ControllerBase
 	}
 
 	[HttpPost]
+	public async Task<ActionResult> Logout()
+	{
+		await HttpContext.SignOutAsync();
+
+		return Ok();
+	}
+
+	[HttpPost]
 	public async Task<ActionResult> RegisterAsync(RegisterRequest request)
 	{
 		// todo sync with hazelcast
