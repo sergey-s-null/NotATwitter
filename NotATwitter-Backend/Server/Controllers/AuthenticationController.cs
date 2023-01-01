@@ -65,7 +65,7 @@ public class AuthenticationController : ControllerBase
 		UserMongoModel user;
 		try
 		{
-			using var _ = _lockService.LockUser(request.Name, false);
+			await using var _ = await _lockService.LockUserAsync(request.Name, false);
 
 			if (await _userMongoRepository.ExistsAsync(request.Name))
 			{

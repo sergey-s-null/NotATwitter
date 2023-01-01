@@ -11,7 +11,7 @@ public interface ILockService
 	/// </param>
 	/// <returns>IDisposable object that represent lock itself. It must be disposed to unlock user.</returns>
 	/// <exception cref="UnableLockException">Could not get lock immediately.</exception>
-	IDisposable LockUser(string name, bool waitForLock);
+	Task<IAsyncDisposable> LockUserAsync(string name, bool waitForLock);
 
 	/// <param name="name">Name of user</param>
 	/// <param name="timeout">
@@ -19,5 +19,5 @@ public interface ILockService
 	/// </param>
 	/// <returns>IDisposable object that represent lock itself. It must be disposed to unlock user.</returns>
 	/// <exception cref="UnableLockException">Could not get lock before timeout.</exception>
-	IDisposable LockUser(string name, TimeSpan timeout);
+	Task<IAsyncDisposable> LockUserAsync(string name, TimeSpan timeout);
 }
