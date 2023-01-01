@@ -28,10 +28,15 @@ public class AuthenticationController : ControllerBase
 	public async Task<ActionResult> Login(LoginRequest request)
 	{
 		// todo sync account changes with hazelcast
-		// todo change authorization later
 		var user = await _userMongoRepository.FindByNameAsync(request.Username);
 
 		if (user is null)
+		{
+			return Unauthorized();
+		}
+
+		var passwordHash = _userPasswordHashingService.GetPasswordHash(request.Password);
+		if (user.PasswordHash != passwordHash)
 		{
 			return Unauthorized();
 		}
