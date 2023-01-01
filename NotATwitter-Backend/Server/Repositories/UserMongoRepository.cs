@@ -7,10 +7,14 @@ namespace Server.Repositories;
 
 public class UserMongoRepository
 {
+	private readonly ILogger<UserMongoRepository> _logger;
 	private readonly IMongoDbCollectionsProvider _mongoDbCollectionsProvider;
 
-	public UserMongoRepository(IMongoDbCollectionsProvider mongoDbCollectionsProvider)
+	public UserMongoRepository(
+		ILogger<UserMongoRepository> logger,
+		IMongoDbCollectionsProvider mongoDbCollectionsProvider)
 	{
+		_logger = logger;
 		_mongoDbCollectionsProvider = mongoDbCollectionsProvider;
 	}
 
@@ -32,7 +36,10 @@ public class UserMongoRepository
 		var count = await userCollection
 			.CountDocumentsAsync(GetNameEqualityFilter(name));
 
-		// todo check and log if count > 1
+		if (count > 1)
+		{
+			_logger.LogWarning($"Found more than one user with name \"{name}\".");
+		}
 
 		return count >= 1;
 	}
