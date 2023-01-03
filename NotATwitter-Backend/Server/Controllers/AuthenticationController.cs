@@ -83,7 +83,7 @@ public class AuthenticationController : ControllerBase
 		}
 		catch (UnableLockException e)
 		{
-			return Conflict("User with the same name already exists.");
+			return Conflict();
 		}
 
 		await AuthorizeAsync(user);
