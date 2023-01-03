@@ -1,6 +1,7 @@
 ﻿using Hazelcast;
 using Hazelcast.DistributedObjects;
 using Server.Entities.Abstract;
+using Server.Enums;
 using Server.Exceptions;
 using Server.Services.Abstract;
 
@@ -54,6 +55,7 @@ public class LockService : ILockService
 				if (isInterrupt())
 				{
 					throw new UnableLockException(
+						UnableLockReason.AlreadyLocked,
 						$"Could not get lock for user with name \"{name}\"."
 					);
 				}
@@ -75,7 +77,7 @@ public class LockService : ILockService
 		}
 		catch (HazelcastClientCreationException e)
 		{
-			throw new UnableLockException("Could not get Hazelcast client.", e);
+			throw new UnableLockException(UnableLockReason.HazelcastConnectionProblem, null, e);
 		}
 	}
 

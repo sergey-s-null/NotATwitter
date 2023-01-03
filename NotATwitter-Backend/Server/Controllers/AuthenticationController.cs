@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Server.Entities;
+using Server.Enums;
 using Server.Exceptions;
 using Server.Models.Mongo;
 using Server.Repositories;
@@ -72,23 +73,39 @@ public class AuthenticationController : ControllerBase
 				return Conflict("User with the same name already exists.");
 			}
 
-			var passwordHash = _userPasswordHashingService.GetPasswordHash(request.Password);
-			user = new UserMongoModel(
-				ObjectId.Empty,
-				request.Name,
-				passwordHash
-			);
+			user = CreateUserModel(request);
 
 			await _userMongoRepository.CreateAsync(user);
 		}
 		catch (UnableLockException e)
 		{
-			return Conflict();
+			if (e.Reason == UnableLockReason.AlreadyLocked)
+			{
+				return Conflict("User with the same name already exists.");
+			}
+
+			if (e.Reason == UnableLockReason.HazelcastConnectionProblem)
+			{
+				throw;
+			}
+
+			throw new ArgumentOutOfRangeException(nameof(e.Reason), e.Reason, "Unknown reason value.");
 		}
 
 		await AuthorizeAsync(user);
 
 		return Ok();
+	}
+
+	private UserMongoModel CreateUserModel(RegisterRequest request)
+	{
+		var passwordHash = _userPasswordHashingService.GetPasswordHash(request.Password);
+
+		return new UserMongoModel(
+			ObjectId.Empty,
+			request.Name,
+			passwordHash
+		);
 	}
 
 	private async Task AuthorizeAsync(UserMongoModel user)

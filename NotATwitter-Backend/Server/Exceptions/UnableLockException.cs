@@ -1,12 +1,20 @@
-﻿namespace Server.Exceptions;
+﻿using Server.Enums;
+
+namespace Server.Exceptions;
 
 public class UnableLockException : Exception
 {
-	public UnableLockException(string? message) : base(message)
+	public UnableLockReason Reason { get; }
+
+	public UnableLockException(UnableLockReason reason, string? message)
+		: base(message ?? reason.Message)
 	{
+		Reason = reason;
 	}
 
-	public UnableLockException(string? message, Exception? innerException) : base(message, innerException)
+	public UnableLockException(UnableLockReason reason, string? message, Exception? innerException)
+		: base(message ?? reason.Message, innerException)
 	{
+		Reason = reason;
 	}
 }
