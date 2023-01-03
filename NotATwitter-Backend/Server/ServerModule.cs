@@ -31,5 +31,17 @@ public class ServerModule : Module
 			.RegisterType<UserPasswordHashingService>()
 			.As<IUserPasswordHashingService>()
 			.SingleInstance();
+		builder
+			.RegisterType<LockService>()
+			.As<ILockService>()
+			.SingleInstance();
+		builder
+			.RegisterType<HardcodedHazelcastConfiguration>()
+			.As<IHazelcastConfiguration>()
+			.SingleInstance();
+		builder
+			.RegisterType<HazelcastClientProvider>()
+			.As<IHazelcastClientProvider>()
+			.SingleInstance();
 	}
 }
