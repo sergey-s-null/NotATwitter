@@ -1,4 +1,5 @@
-﻿using Hazelcast.DistributedObjects;
+﻿using Hazelcast;
+using Hazelcast.DistributedObjects;
 using Server.Entities.Abstract;
 using Server.Exceptions;
 using Server.Services.Abstract;
@@ -31,7 +32,7 @@ public class LockService : ILockService
 
 	private async Task<IAsyncDisposable> LockUserInternalAsync(string name, Func<bool> isInterrupt)
 	{
-		var client = _hazelcastClientProvider.Client;
+		var client = await GetClientAsync();
 
 		var map = await client.GetMapAsync<string, bool>(_hazelcastConfiguration.UserLockMapName);
 
@@ -63,6 +64,18 @@ public class LockService : ILockService
 			{
 				await map.UnlockAsync(key);
 			}
+		}
+	}
+
+	private async Task<IHazelcastClient> GetClientAsync()
+	{
+		try
+		{
+			return await _hazelcastClientProvider.GetClientAsync();
+		}
+		catch (HazelcastClientCreationException e)
+		{
+			throw new UnableLockException("Could not get Hazelcast client.", e);
 		}
 	}
 

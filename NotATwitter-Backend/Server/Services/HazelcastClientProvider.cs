@@ -1,13 +1,12 @@
 ﻿using Hazelcast;
 using Server.Entities.Abstract;
+using Server.Exceptions;
 using Server.Services.Abstract;
 
 namespace Server.Services;
 
 public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDisposable
 {
-	public IHazelcastClient Client => _client ??= CreateClientAsync().Result;
-
 	private readonly IHazelcastConfiguration _hazelcastConfiguration;
 
 	private IHazelcastClient? _client;
@@ -17,7 +16,12 @@ public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDi
 		_hazelcastConfiguration = hazelcastConfiguration;
 	}
 
-	private async Task<IHazelcastClient> CreateClientAsync()
+	public async ValueTask<IHazelcastClient> GetClientAsync()
+	{
+		return _client ??= await CreateClientAsync();
+	}
+
+	private ValueTask<IHazelcastClient> CreateClientAsync()
 	{
 		var options = new HazelcastOptionsBuilder()
 			.With(x =>
@@ -27,9 +31,18 @@ public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDi
 					x.Networking.Addresses.Add(address);
 				}
 			})
+			.With(x => x.ClusterName = _hazelcastConfiguration.ClusterName)
 			.Build();
 
-		return await HazelcastClientFactory.StartNewClientAsync(options);
+		var tokenSource = new CancellationTokenSource(_hazelcastConfiguration.ConnectionTimeout);
+		try
+		{
+			return HazelcastClientFactory.StartNewClientAsync(options, tokenSource.Token);
+		}
+		catch (TaskCanceledException e)
+		{
+			throw new HazelcastClientCreationException("Could not connect to Hazelcast cluster. Timeout exceeded.", e);
+		}
 	}
 
 	public async ValueTask DisposeAsync()
