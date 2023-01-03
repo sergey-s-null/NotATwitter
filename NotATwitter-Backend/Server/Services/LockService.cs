@@ -41,31 +41,22 @@ public class LockService : ILockService
 
 		while (true)
 		{
-			try
+			var locked = await map.GetAsync(key);
+			if (!locked)
 			{
-				await map.LockAsync(key);
-
-				var locked = await map.GetAsync(key);
-				if (!locked)
-				{
-					await map.SetAsync(key, true);
-					return new UserLock(map, key);
-				}
-
-				if (isInterrupt())
-				{
-					throw new UnableLockException(
-						UnableLockReason.AlreadyLocked,
-						$"Could not get lock for user with name \"{name}\"."
-					);
-				}
-
-				await Task.Delay(_hazelcastConfiguration.LockCheckPeriod);
+				await map.SetAsync(key, true);
+				return new UserLock(map, key);
 			}
-			finally
+
+			if (isInterrupt())
 			{
-				await map.UnlockAsync(key);
+				throw new UnableLockException(
+					UnableLockReason.AlreadyLocked,
+					$"Could not get lock for user with name \"{name}\"."
+				);
 			}
+
+			await Task.Delay(_hazelcastConfiguration.LockCheckPeriod);
 		}
 	}
 
@@ -99,15 +90,7 @@ public class LockService : ILockService
 
 		public async ValueTask DisposeAsync()
 		{
-			try
-			{
-				await _map.LockAsync(_key);
-				await _map.SetAsync(_key, false);
-			}
-			finally
-			{
-				await _map.UnlockAsync(_key);
-			}
+			await _map.SetAsync(_key, false);
 
 			await _map.DisposeAsync();
 		}
