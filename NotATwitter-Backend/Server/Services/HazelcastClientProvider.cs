@@ -21,7 +21,7 @@ public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDi
 		return _client ??= await CreateClientAsync();
 	}
 
-	private ValueTask<IHazelcastClient> CreateClientAsync()
+	private async ValueTask<IHazelcastClient> CreateClientAsync()
 	{
 		var options = new HazelcastOptionsBuilder()
 			.With(x =>
@@ -37,9 +37,9 @@ public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDi
 		var tokenSource = new CancellationTokenSource(_hazelcastConfiguration.ConnectionTimeout);
 		try
 		{
-			return HazelcastClientFactory.StartNewClientAsync(options, tokenSource.Token);
+			return await HazelcastClientFactory.StartNewClientAsync(options, tokenSource.Token);
 		}
-		catch (TaskCanceledException e)
+		catch (OperationCanceledException e)
 		{
 			throw new HazelcastClientCreationException("Could not connect to Hazelcast cluster. Timeout exceeded.", e);
 		}
