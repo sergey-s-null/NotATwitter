@@ -6,6 +6,7 @@ public interface IHazelcastConfiguration
 	TimeSpan ConnectionTimeout { get; }
 
 	string ClusterName { get; }
+	string ClientName { get; }
 
 	string UserLockMapName { get; }
 	TimeSpan LockCheckPeriod { get; }

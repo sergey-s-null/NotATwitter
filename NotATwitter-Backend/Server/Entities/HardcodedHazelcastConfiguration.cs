@@ -12,6 +12,7 @@ public class HardcodedHazelcastConfiguration : IHazelcastConfiguration
 	public TimeSpan ConnectionTimeout { get; } = TimeSpan.FromSeconds(5);
 
 	public string ClusterName => "NotATwitter";
+	public string ClientName => "NotATwitter-C#-Server";
 
 	public string UserLockMapName => "user-lock";
 	public TimeSpan LockCheckPeriod { get; } = TimeSpan.FromMilliseconds(50);

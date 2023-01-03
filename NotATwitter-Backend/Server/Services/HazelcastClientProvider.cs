@@ -23,16 +23,7 @@ public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDi
 
 	private async ValueTask<IHazelcastClient> CreateClientAsync()
 	{
-		var options = new HazelcastOptionsBuilder()
-			.With(x =>
-			{
-				foreach (var address in _hazelcastConfiguration.Addresses)
-				{
-					x.Networking.Addresses.Add(address);
-				}
-			})
-			.With(x => x.ClusterName = _hazelcastConfiguration.ClusterName)
-			.Build();
+		var options = GetOptions();
 
 		var tokenSource = new CancellationTokenSource(_hazelcastConfiguration.ConnectionTimeout);
 		try
@@ -43,6 +34,21 @@ public sealed class HazelcastClientProvider : IHazelcastClientProvider, IAsyncDi
 		{
 			throw new HazelcastClientCreationException("Could not connect to Hazelcast cluster. Timeout exceeded.", e);
 		}
+	}
+
+	private HazelcastOptions GetOptions()
+	{
+		return new HazelcastOptionsBuilder()
+			.With(x =>
+			{
+				foreach (var address in _hazelcastConfiguration.Addresses)
+				{
+					x.Networking.Addresses.Add(address);
+				}
+			})
+			.With(x => x.ClusterName = _hazelcastConfiguration.ClusterName)
+			.With(x => x.ClientName = _hazelcastConfiguration.ClientName)
+			.Build();
 	}
 
 	public async ValueTask DisposeAsync()
