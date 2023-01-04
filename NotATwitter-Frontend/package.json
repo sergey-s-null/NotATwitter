@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode development",
-    "dev": "nodemon server.js"
+    "build": "webpack --mode production",
+    "start": "webpack --mode development"
   },
   "author": "",
   "license": "ISC",
