@@ -1,9 +1,10 @@
 const path = require("path");
-const webpack = require("webpack");// todo проверить, необходимо ли, или можно удалить
-const HTMLWebpackPlugin = require("html-webpack-plugin");
+// todo проверить, работает ли без этого
+const webpack = require("webpack");
 
 module.exports = {
-    entry: "./index.js",
+    entry: "./src/index.js",
+    mode: "development",
     output: {
         filename: "bundle.js",
         path: path.resolve("dist"),
@@ -17,19 +18,6 @@ module.exports = {
                 exclude: /node_modules/,
                 use: "babel-loader"
             },
-            {
-                test: /\.html$/,
-                use: "html-loader"
-            },
-            {
-                test: /\.css$/,
-                use: ["style-loader", "css-loader"],
-            },
         ],
-    },
-    plugins: [
-        new HTMLWebpackPlugin({
-            template: "index.html"
-        }),
-    ]
+    }
 }
