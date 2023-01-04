@@ -1,6 +1,4 @@
 const path = require("path");
-// todo проверить, работает ли без этого
-const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const host = process.env.HOST || 'localhost';
