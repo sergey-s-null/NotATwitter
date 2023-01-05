@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SearchPage from "./components/SearchPage";
+import AuthorizationForm from "./components/AuthorizationForm";
 
 const router = createBrowserRouter([
     {
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "authorization",
-                element: <div>auth</div>
+                element: <AuthorizationForm/>
             }
         ]
     }
