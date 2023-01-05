@@ -1,9 +1,15 @@
 import * as React from "react";
+import { Container } from "react-bootstrap";
+import SearchForm from "./SearchForm";
+import Header from "./Header";
 
 export default function App() {
     return (
         <div>
-            <h1>React from Scratch</h1>
+            <Header/>
+            <Container>
+                <SearchForm/>
+            </Container>
         </div>
     );
 }
