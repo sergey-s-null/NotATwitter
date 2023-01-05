@@ -22,11 +22,15 @@ module.exports = {
         port: 3000,
     },
     module: {
-        rules:[
+        rules: [
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 use: "ts-loader"
+            },
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"]
             },
         ],
     },
