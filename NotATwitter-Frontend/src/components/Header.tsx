@@ -13,14 +13,30 @@ const Header = () => {
                         </Navbar.Brand>
                     </LinkContainer>
                 </Col>
+
                 <Col sm="auto">
-                    <Button variant="secondary" size="sm" className="mx-1">Sign in</Button>
+                    <LinkContainer to="authorization">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            className="mx-1"
+                        >
+                            Sign in
+                        </Button>
+                    </LinkContainer>
                 </Col>
 
                 <Col sm="auto">
-                    <Button variant="primary" size="sm" className="mx-1">Sign up</Button>
+                    <LinkContainer to="registration">
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            className="mx-1"
+                        >
+                            Sign up
+                        </Button>
+                    </LinkContainer>
                 </Col>
-
             </Container>
         </Navbar>
     );
