@@ -5,6 +5,7 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SearchPage from "./components/SearchPage";
 import AuthorizationForm from "./components/AuthorizationForm";
+import RegistrationForm from "./components/RegistrationForm";
 
 const router = createBrowserRouter([
     {
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "registration",
-                element: <div>reg</div>
+                element: <RegistrationForm/>
             },
             {
                 path: "authorization",
