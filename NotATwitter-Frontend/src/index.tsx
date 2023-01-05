@@ -2,10 +2,12 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
-import "bootstrap/dist/css/bootstrap.min.css";
 import SearchPage from "./components/SearchPage";
 import AuthorizationForm from "./components/AuthorizationForm";
 import RegistrationForm from "./components/RegistrationForm";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const router = createBrowserRouter([
     {
