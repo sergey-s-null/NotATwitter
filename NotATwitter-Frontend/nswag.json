@@ -1,9 +1,9 @@
 {
-  "runtime": "NetCore21",
+  "runtime": "Net60",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "http://redocly.github.io/redoc/openapi.yaml",
+      "url": "http://localhost:5079/swagger/v1/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
@@ -69,7 +69,7 @@
       "enumNameGeneratorType": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": null,
+      "output": "./src/api/NotATwitterApi.ts",
       "newLineBehavior": "Auto"
     },
     "openApiToCSharpClient": {
