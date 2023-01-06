@@ -28,6 +28,7 @@ const SearchForm = (props: React.HTMLAttributes<HTMLElement>) => {
                     </Form.Group>
 
 
+                    {/*todo fix: show only if authorized*/}
                     <Form.Group className="mb-3">
                         <Form.Check label="Show only my own messages"></Form.Check>
                     </Form.Group>

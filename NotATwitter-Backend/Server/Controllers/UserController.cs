@@ -36,6 +36,7 @@ public class UserController : ControllerBase
 			return BadRequest();
 		}
 
+		// todo use ES instead
 		var publicInfo = await _userMongoRepository.FindPublicInfoAsync(userId);
 		if (publicInfo is null)
 		{
@@ -73,6 +74,7 @@ public class UserController : ControllerBase
 	[Authorize]
 	public async Task<ActionResult> UpdateInfoAsync(UpdateUserInfoRequest request)
 	{
+		// todo lock user via hazelcast
 		var userId = User.GetMongoDbIdOrNull();
 		if (userId is null)
 		{
