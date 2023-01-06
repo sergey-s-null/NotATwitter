@@ -6,7 +6,7 @@ namespace Server.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-	public static ObjectId? GetMongoDbIdOrDefault(this ClaimsPrincipal claimsPrincipal)
+	public static ObjectId? GetMongoDbIdOrNull(this ClaimsPrincipal claimsPrincipal)
 	{
 		var idStr = claimsPrincipal.Claims
 			.FirstOrDefault(x => x.Type == CustomClaimTypes.MongoDbIdentifier)?

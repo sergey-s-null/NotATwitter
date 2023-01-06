@@ -23,7 +23,7 @@ public class MessageController : ControllerBase
 	[Authorize]
 	public async Task<ActionResult> Create(CreateMessageRequest request)
 	{
-		var userId = User.GetMongoDbIdOrDefault();
+		var userId = User.GetMongoDbIdOrNull();
 		if (userId is null)
 		{
 			return Unauthorized();
