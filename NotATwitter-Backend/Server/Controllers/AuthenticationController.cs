@@ -104,7 +104,9 @@ public class AuthenticationController : ControllerBase
 		return new UserMongoModel(
 			ObjectId.Empty,
 			request.Name,
-			passwordHash
+			passwordHash,
+			request.Name,
+			string.Empty
 		);
 	}
 

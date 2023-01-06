@@ -32,8 +32,10 @@ public class MessageController : ControllerBase
 		await _messageMongoRepository.CreateAsync(new MessageMongoModel(
 			ObjectId.Empty,
 			userId.Value,
+			request.Title,
+			request.Body,
 			DateTime.Now,
-			request.Text
+			DateTime.Now
 		));
 
 		return Ok();
