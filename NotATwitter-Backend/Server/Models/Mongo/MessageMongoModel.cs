@@ -5,6 +5,8 @@ namespace Server.Models.Mongo;
 public record MessageMongoModel(
 	ObjectId Id,
 	ObjectId AuthorId,
+	string Title,
+	string Body,
 	DateTime Created,
-	string Text
+	DateTime LastEdited
 );

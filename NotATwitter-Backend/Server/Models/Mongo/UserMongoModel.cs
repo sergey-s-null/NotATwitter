@@ -5,5 +5,7 @@ namespace Server.Models.Mongo;
 public record UserMongoModel(
 	ObjectId Id,
 	string Name,
-	string PasswordHash
+	string PasswordHash,
+	string DisplayName,
+	string AboutMe
 );
