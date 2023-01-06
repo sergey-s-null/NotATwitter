@@ -21,7 +21,7 @@ public class MessageController : ControllerBase
 
 	[HttpPost]
 	[Authorize]
-	public async Task<ActionResult> Create(CreateMessageRequest request)
+	public async Task<ActionResult> CreateAsync(CreateMessageRequest request)
 	{
 		var userId = User.GetMongoDbIdOrNull();
 		if (userId is null)
