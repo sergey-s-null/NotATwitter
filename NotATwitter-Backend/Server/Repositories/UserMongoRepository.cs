@@ -21,6 +21,17 @@ public class UserMongoRepository
 		_mongoDbCollectionsProvider = mongoDbCollectionsProvider;
 	}
 
+	public async Task<UserMongoModel?> FindAsync(ObjectId id)
+	{
+		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
+
+		var user = await userCollection
+			.Find(x => x.Id == id)
+			.FirstOrDefaultAsync();
+
+		return user;
+	}
+
 	public async Task<UserMongoModel?> FindByNameAsync(string name)
 	{
 		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
