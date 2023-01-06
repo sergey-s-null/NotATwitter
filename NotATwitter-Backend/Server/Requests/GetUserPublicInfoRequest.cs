@@ -1,5 +1,5 @@
 ﻿namespace Server.Requests;
 
-public record UserPublicInfoRequest(
+public record GetUserPublicInfoRequest(
 	string UserId
 );

@@ -24,7 +24,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<ActionResult<UserPublicInfoResponse>> GetPublicInfoAsync(UserPublicInfoRequest request)
+	public async Task<ActionResult<UserPublicInfoResponse>> GetPublicInfoAsync(GetUserPublicInfoRequest request)
 	{
 		if (!ObjectId.TryParse(request.UserId, out var userId))
 		{
