@@ -1,6 +1,9 @@
 ﻿using System.Linq.Expressions;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Server.Models.Mongo;
+using Server.ReadModels.Mongo;
 using Server.Services.Abstract;
 
 namespace Server.Repositories;
@@ -42,6 +45,25 @@ public class UserMongoRepository
 		}
 
 		return count >= 1;
+	}
+
+	public async Task<UserPublicInfoMongoModel?> FindPublicInfoAsync(ObjectId userId)
+	{
+		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
+
+		var document = await userCollection
+			.Find(x => x.Id == userId)
+			.Project(
+				Builders<UserMongoModel>.Projection
+					.Include(x => x.Id)
+					.Include(x => x.DisplayName)
+					.Include(x => x.AboutMe)
+			)
+			.FirstOrDefaultAsync();
+
+		return document is not null
+			? BsonSerializer.Deserialize<UserPublicInfoMongoModel>(document)
+			: null;
 	}
 
 	public async Task<UserMongoModel> CreateAsync(UserMongoModel user)
