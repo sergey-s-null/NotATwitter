@@ -40,4 +40,18 @@ public class MessageController : ControllerBase
 
 		return Ok();
 	}
+
+	[HttpPost]
+	[Authorize]
+	public Task<ActionResult> UpdateAsync()
+	{
+		throw new NotImplementedException();
+	}
+
+	[HttpPost]
+	[Authorize]
+	public Task<ActionResult> DeleteAsync()
+	{
+		throw new NotImplementedException();
+	}
 }
