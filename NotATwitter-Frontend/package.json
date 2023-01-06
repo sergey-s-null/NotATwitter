@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "webpack server"
+    "start": "webpack server",
+    "generate-api": "nswag run"
   },
   "author": "",
   "license": "ISC",
