@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Server.Extensions;
+using Server.Models.Mongo;
 using Server.Repositories;
 using Server.Requests;
 using Server.Responses;
@@ -70,8 +71,33 @@ public class UserController : ControllerBase
 
 	[HttpPost]
 	[Authorize]
-	public Task<ActionResult> UpdateInfoAsync()
+	public async Task<ActionResult> UpdateInfoAsync(UpdateUserInfoRequest request)
 	{
-		throw new NotImplementedException();
+		var userId = User.GetMongoDbIdOrNull();
+		if (userId is null)
+		{
+			return Unauthorized();
+		}
+
+		var user = await _userMongoRepository.FindAsync(userId.Value);
+		if (user is null)
+		{
+			_logger.LogError($"User with id {userId} not found in database, but it's already authorized.");
+			return BadRequest();
+		}
+
+		var changedUser = ApplyChanges(user, request);
+		await _userMongoRepository.UpdateAsync(changedUser);
+
+		return Ok();
+	}
+
+	private static UserMongoModel ApplyChanges(UserMongoModel user, UpdateUserInfoRequest request)
+	{
+		return user with
+		{
+			DisplayName = request.DisplayName ?? user.DisplayName,
+			AboutMe = request.AboutMe ?? user.AboutMe
+		};
 	}
 }

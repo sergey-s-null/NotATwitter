@@ -86,6 +86,19 @@ public class UserMongoRepository
 		return user;
 	}
 
+	public async Task UpdateAsync(UserMongoModel user)
+	{
+		var userCollection = _mongoDbCollectionsProvider.GetUserCollection();
+
+		await userCollection.UpdateOneAsync(
+			x => x.Id == user.Id,
+			Builders<UserMongoModel>.Update
+				.Set(x => x.PasswordHash, user.PasswordHash)
+				.Set(x => x.DisplayName, user.DisplayName)
+				.Set(x => x.AboutMe, user.AboutMe)
+		);
+	}
+
 	private static Expression<Func<UserMongoModel, bool>> GetNameEqualityFilter(string name)
 	{
 		var nameLower = name.ToLower();
