@@ -75,9 +75,32 @@ public class MessageController : ControllerBase
 
 	[HttpPost]
 	[Authorize]
-	public Task<ActionResult> DeleteAsync()
+	public async Task<ActionResult> DeleteAsync(DeleteMessageRequest request)
 	{
-		throw new NotImplementedException();
+		var userId = User.GetMongoDbIdOrNull();
+		if (userId is null)
+		{
+			return Unauthorized();
+		}
+
+		if (!ObjectId.TryParse(request.MessageId, out var messageId))
+		{
+			return BadRequest();
+		}
+
+		var authorId = await _messageMongoRepository.GetAuthorIdAsync(messageId);
+		if (authorId is null)
+		{
+			return NotFound();
+		}
+
+		if (authorId != userId)
+		{
+			return Forbid();
+		}
+
+		await _messageMongoRepository.DeleteAsync(messageId);
+		return Ok();
 	}
 
 	private static MessageMongoModel ApplyChanges(MessageMongoModel message, UpdateMessageRequest request)

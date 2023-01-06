@@ -36,6 +36,13 @@ public class MessageMongoRepository
 		);
 	}
 
+	public async Task DeleteAsync(ObjectId messageId)
+	{
+		var messageCollection = _mongoDbCollectionsProvider.GetMessageCollection();
+
+		await messageCollection.DeleteOneAsync(x => x.Id == messageId);
+	}
+
 	public async Task<MessageMongoModel?> FindAsync(ObjectId messageId)
 	{
 		var messageCollection = _mongoDbCollectionsProvider.GetMessageCollection();
@@ -43,5 +50,26 @@ public class MessageMongoRepository
 		var searchResult = await messageCollection
 			.FindAsync(x => x.Id == messageId);
 		return searchResult.FirstOrDefault();
+	}
+
+	public async Task<ObjectId?> GetAuthorIdAsync(ObjectId messageId)
+	{
+		var messageCollection = _mongoDbCollectionsProvider.GetMessageCollection();
+
+		var document = await messageCollection
+			.Find(x => x.Id == messageId)
+			.Project(
+				Builders<MessageMongoModel>.Projection
+					.Include(x => x.AuthorId)
+			)
+			.FirstOrDefaultAsync();
+
+		if (!document.TryGetValue(nameof(MessageMongoModel.AuthorId), out var value)
+		    || !value.IsObjectId)
+		{
+			return null;
+		}
+
+		return value.AsObjectId;
 	}
 }
