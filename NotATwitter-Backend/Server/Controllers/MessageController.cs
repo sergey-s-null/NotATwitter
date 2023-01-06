@@ -43,9 +43,34 @@ public class MessageController : ControllerBase
 
 	[HttpPost]
 	[Authorize]
-	public Task<ActionResult> UpdateAsync()
+	public async Task<ActionResult> UpdateAsync(UpdateMessageRequest request)
 	{
-		throw new NotImplementedException();
+		var userId = User.GetMongoDbIdOrNull();
+		if (userId is null)
+		{
+			return Unauthorized();
+		}
+
+		if (!ObjectId.TryParse(request.MessageId, out var messageId))
+		{
+			return BadRequest();
+		}
+
+		var message = await _messageMongoRepository.FindAsync(messageId);
+		if (message is null)
+		{
+			return NotFound();
+		}
+
+		if (message.AuthorId != userId)
+		{
+			return Forbid();
+		}
+
+		var changedMessage = ApplyChanges(message, request);
+		await _messageMongoRepository.UpdateAsync(changedMessage);
+
+		return Ok();
 	}
 
 	[HttpPost]
@@ -53,5 +78,15 @@ public class MessageController : ControllerBase
 	public Task<ActionResult> DeleteAsync()
 	{
 		throw new NotImplementedException();
+	}
+
+	private static MessageMongoModel ApplyChanges(MessageMongoModel message, UpdateMessageRequest request)
+	{
+		return message with
+		{
+			Title = request.Title ?? message.Title,
+			Body = request.Body ?? message.Body,
+			LastEdited = DateTime.Now
+		};
 	}
 }
