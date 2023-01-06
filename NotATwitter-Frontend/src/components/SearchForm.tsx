@@ -16,7 +16,7 @@ const SearchForm = (props: React.HTMLAttributes<HTMLElement>) => {
                         <Form.Label column xs="auto">Show messages only for the last</Form.Label>
                         <Col style={{ height: "fit-content", margin: "auto" }}>
                             <InputGroup>
-                                <Form.Control type="input" placeholder="42" size="sm"></Form.Control>
+                                <Form.Control type="input" placeholder="...42..." size="sm"></Form.Control>
                                 <Form.Select size="sm" style={{ maxWidth: "200px" }}>
                                     <option>minutes</option>
                                     <option>hours</option>
