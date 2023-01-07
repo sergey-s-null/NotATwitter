@@ -3,7 +3,6 @@ using Autofac.Builder;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Server;
-using Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +15,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
 	.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-	.AddCookie(x => 
-		x.LoginPath = $"/{nameof(AuthenticationController).Replace("Controller", string.Empty)}/{nameof(AuthenticationController.Login)}"
-	);
+	.AddCookie();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(
 	ContainerBuildOptions.None,
