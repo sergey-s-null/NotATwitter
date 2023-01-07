@@ -6,8 +6,9 @@ namespace Server.Controllers;
 [Route("[controller]")]
 public class TestController : ControllerBase
 {
-	public Task<ActionResult> Get()
+	[HttpGet]
+	public async Task<ActionResult<string>> Get()
 	{
-		return Task.FromResult<ActionResult>(Ok("Hi, I'm working!"));
+		return "Hi, I'm working!";
 	}
 }
